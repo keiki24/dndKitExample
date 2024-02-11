@@ -14,6 +14,7 @@ function Draggable(props) {
     width: "100px",
     height: "20px",
     fontSize: "14px",
+    backgroundColor: "brown",
   };
 
   return (
