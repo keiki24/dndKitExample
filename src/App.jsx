@@ -69,10 +69,17 @@ function App() {
     // 枠内にドラッグ&ドロップされた場合
     if (over) {
       console.log(event);
-      setParent((prevParent) => ({
-        ...prevParent,
-        [over.id]: active.id,
-      }));
+      setParent((prevParent) => {
+        const newParent = Object.keys(prevParent).reduce((acc, key) => {
+          // ドラッグされている要素にはnullを設定する、それ以外は元の値を設定する
+          acc[key] = prevParent[key] === active.id ? null : prevParent[key];
+          return acc;
+        }, {});
+
+        newParent[over.id] = active.id;
+
+        return newParent;
+      });
     } else {
       // 枠外にドラッグ&ドロップされた場合
       console.log(event);
