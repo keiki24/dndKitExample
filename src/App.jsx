@@ -70,12 +70,13 @@ function App() {
     if (over) {
       console.log(event);
       setParent((prevParent) => {
-        const newParent = Object.keys(prevParent).reduce((acc, key) => {
-          // ドラッグされている要素にはnullを設定する、それ以外は元の値を設定する
-          acc[key] = prevParent[key] === active.id ? null : prevParent[key];
-          return acc;
+        const newParent = Object.keys(prevParent).reduce((accumulator, key) => {
+          // ドラッグ&ドロップ先からドラッグ要素を削除する
+          accumulator[key] = prevParent[key] === active.id ? null : prevParent[key];
+          return accumulator;
         }, {});
 
+        // 新しいドラッグ&ドロップ先にドラッグ要素を設定する
         newParent[over.id] = active.id;
 
         return newParent;
