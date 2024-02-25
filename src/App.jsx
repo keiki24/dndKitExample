@@ -50,7 +50,7 @@ function App() {
                 ? draggables
                     .filter((drag) => drag.id === parent[containerId])
                     .map((filteredDrag) => (
-                      <Draggable key={filteredDrag.id} id={filteredDrag.id}>
+                      <Draggable key={filteredDrag.id} id={filteredDrag.id} isDropped={true}>
                         {filteredDrag.content}
                       </Draggable>
                     ))
