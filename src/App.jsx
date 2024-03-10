@@ -32,7 +32,7 @@ function App() {
 
   return (
     <>
-      <h1>dndKit</h1>
+      <h1 className="font-bold text-lg">dnd-Kit Example</h1>
       <DndContext onDragEnd={handleDragEnd}>
         <div>
           {draggables
