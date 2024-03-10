@@ -30,9 +30,16 @@ function App() {
     { id: "draggable-4", content: "Drag me 4" },
   ]);
 
+  const [dropped, setDropped] = useState({
+    "droppable-1": false,
+    "droppable-2": false,
+    "droppable-3": false,
+    "droppable-4": false,
+  });
+
   return (
     <>
-      <h1 className="font-bold text-lg">dnd-Kit Example</h1>
+      <h1 className="text-lg font-bold">dnd-Kit Example</h1>
       <DndContext onDragEnd={handleDragEnd}>
         <div>
           {draggables
@@ -50,7 +57,11 @@ function App() {
                 ? draggables
                     .filter((drag) => drag.id === parent[containerId])
                     .map((filteredDrag) => (
-                      <Draggable key={filteredDrag.id} id={filteredDrag.id} isDropped={true}>
+                      <Draggable
+                        key={filteredDrag.id}
+                        id={filteredDrag.id}
+                        isDropped={dropped[containerId]}
+                      >
                         {filteredDrag.content}
                       </Draggable>
                     ))
@@ -72,7 +83,8 @@ function App() {
       setParent((prevParent) => {
         const newParent = Object.keys(prevParent).reduce((accumulator, key) => {
           // ドラッグ&ドロップ先からドラッグ要素を削除する
-          accumulator[key] = prevParent[key] === active.id ? null : prevParent[key];
+          accumulator[key] =
+            prevParent[key] === active.id ? null : prevParent[key];
           return accumulator;
         }, {});
 
@@ -80,6 +92,12 @@ function App() {
         newParent[over.id] = active.id;
 
         return newParent;
+      });
+
+      setDropped((prevDropped) => {
+        const newDropped = { ...prevDropped };
+        newDropped[over.id] = true;
+        return newDropped;
       });
     } else {
       // 枠外にドラッグ&ドロップされた場合
