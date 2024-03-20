@@ -4,9 +4,10 @@ import { useDraggable } from "@dnd-kit/core";
 import { Button } from "./components/Button";
 
 function Draggable(props) {
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id: props.id,
-  });
+  const { attributes, isDragging, listeners, setNodeRef, transform } =
+    useDraggable({
+      id: props.id,
+    });
   const style = {
     ...(transform
       ? {
@@ -20,12 +21,23 @@ function Draggable(props) {
 
   const draggableButton = props.isDropped ? (
     <div ref={setNodeRef}>
-      <Button style={style} {...listeners} {...attributes}>
+      <Button
+        style={style}
+        dragging={isDragging}
+        {...listeners}
+        {...attributes}
+      >
         {props.children}
       </Button>
     </div>
   ) : (
-    <button ref={setNodeRef} style={style} {...listeners} {...attributes} className="bg-red-900 mx-1 rounded-lg text-white">
+    <button
+      ref={setNodeRef}
+      style={style}
+      {...listeners}
+      {...attributes}
+      className="mx-1 rounded-lg bg-red-900 text-white"
+    >
       {props.children}
     </button>
   );

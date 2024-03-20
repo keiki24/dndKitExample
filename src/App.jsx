@@ -1,4 +1,4 @@
-import { DndContext } from "@dnd-kit/core";
+import { DndContext, MouseSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { useState } from "react";
 import Draggable from "./Draggable.jsx";
 import Droppable from "./Droppable.jsx";
@@ -6,6 +6,7 @@ import Droppable from "./Droppable.jsx";
 import "./main.css";
 
 function App() {
+
   // droppable item list
   const containers = [
     "droppable-1",
@@ -15,21 +16,14 @@ function App() {
   ];
 
   // droppable item にドロップされているitemのid
-  const [parent, setParent] = useState({
+  const [droppables, setDroppables] = useState({
     "droppable-1": null,
     "droppable-2": null,
     "droppable-3": null,
     "droppable-4": null,
   });
 
-  // draggable item list
-  const [draggables, setDraggables] = useState([
-    { id: "draggable-1", content: "Drag me 1" },
-    { id: "draggable-2", content: "Drag me 2" },
-    { id: "draggable-3", content: "Drag me 3" },
-    { id: "draggable-4", content: "Drag me 4" },
-  ]);
-
+  // droppable item にドロップされたかどうか
   const [dropped, setDropped] = useState({
     "droppable-1": false,
     "droppable-2": false,
@@ -37,25 +31,43 @@ function App() {
     "droppable-4": false,
   });
 
+  // draggable item のリスト
+  const [draggables, setDraggables] = useState([
+    { id: "draggable-1", content: "Drag me 1" },
+    { id: "draggable-2", content: "Drag me 2" },
+    { id: "draggable-3", content: "Drag me 3" },
+    { id: "draggable-4", content: "Drag me 4" },
+  ]);
+
+  const mouseSensor = useSensor(MouseSensor, {
+    activationConstraint: {
+      distance: 0,
+    },
+  });
+
+  const sensors = useSensors(mouseSensor);
+
   return (
     <>
       <h1 className="text-lg font-bold">dnd-Kit Example</h1>
-      <DndContext onDragEnd={handleDragEnd}>
+      <DndContext onDragEnd={handleDragEnd} sensors={sensors}>
+        {/* ドラッグ元 */}
         <div>
           {draggables
-            .filter((drag) => !Object.values(parent).includes(drag.id))
+            .filter((drag) => !Object.values(droppables).includes(drag.id))
             .map((drag) => (
               <Draggable key={drag.id} id={drag.id}>
                 {drag.content}
               </Draggable>
             ))}
         </div>
+        {/* ドラッグ先 */}
         <div className="grid grid-cols-2 gap-2">
           {containers.map((containerId) => (
             <Droppable key={containerId} id={containerId}>
-              {parent[containerId]
+              {droppables[containerId]
                 ? draggables
-                    .filter((drag) => drag.id === parent[containerId])
+                    .filter((drag) => drag.id === droppables[containerId])
                     .map((filteredDrag) => (
                       <Draggable
                         key={filteredDrag.id}
@@ -80,18 +92,18 @@ function App() {
     // 枠内にドラッグ&ドロップされた場合
     if (over) {
       console.log(event);
-      setParent((prevParent) => {
-        const newParent = Object.keys(prevParent).reduce((accumulator, key) => {
-          // ドラッグ&ドロップ先からドラッグ要素を削除する
+      setDroppables((prevDroppable) => {
+        const newDroppables = Object.keys(prevDroppable).reduce((accumulator, key) => {
+          // ドラッグ&ドロップ元からドラッグ要素を削除する
           accumulator[key] =
-            prevParent[key] === active.id ? null : prevParent[key];
+            prevDroppable[key] === active.id ? null : prevDroppable[key];
           return accumulator;
         }, {});
 
         // 新しいドラッグ&ドロップ先にドラッグ要素を設定する
-        newParent[over.id] = active.id;
+        newDroppables[over.id] = active.id;
 
-        return newParent;
+        return newDroppables;
       });
 
       setDropped((prevDropped) => {
@@ -102,15 +114,15 @@ function App() {
     } else {
       // 枠外にドラッグ&ドロップされた場合
       console.log(event);
-      const newParent = Object.keys(parent).reduce((acc, key) => {
-        if (parent[key] === active.id) {
+      const newParent = Object.keys(droppables).reduce((acc, key) => {
+        if (droppables[key] === active.id) {
           acc[key] = null;
         } else {
-          acc[key] = parent[key];
+          acc[key] = droppables[key];
         }
         return acc;
       }, {});
-      setParent(newParent);
+      setDroppables(newParent);
     }
   }
 }
