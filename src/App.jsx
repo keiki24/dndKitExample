@@ -7,7 +7,7 @@ import Droppable from "./Droppable.jsx";
 import "./main.css";
 
 function App() {
-  // droppable item list
+  // droppable item (入れ物)
   const containers = [
     "droppable-1",
     "droppable-2",
@@ -15,7 +15,7 @@ function App() {
     "droppable-4",
   ];
 
-  // droppable item にドロップされているitemのid
+  // droppable item (入れ物) にドロップされているitemのid
   const [droppables, setDroppables] = useState({
     "droppable-1": null,
     "droppable-2": null,
@@ -23,13 +23,21 @@ function App() {
     "droppable-4": null,
   });
 
-  // droppable item にドロップされたかどうか
+  // droppable item (入れ物) にドロップされたかどうか
   const [dropped, setDropped] = useState({
     "droppable-1": false,
     "droppable-2": false,
     "droppable-3": false,
     "droppable-4": false,
   });
+
+  // draggable item のリスト
+  const [draggables, setDraggables] = useState([
+    { id: "draggable-1", content: "Drag me 1" },
+    { id: "draggable-2", content: "Drag me 2" },
+    { id: "draggable-3", content: "Drag me 3" },
+    { id: "draggable-4", content: "Drag me 4" },
+  ]);
 
   // draggable item を追加する関数
   const addDraggable = () => {
@@ -59,14 +67,6 @@ function App() {
       return newDraggables;
     });
   };
-
-  // draggable item のリスト
-  const [draggables, setDraggables] = useState([
-    { id: "draggable-1", content: "Drag me 1" },
-    { id: "draggable-2", content: "Drag me 2" },
-    { id: "draggable-3", content: "Drag me 3" },
-    { id: "draggable-4", content: "Drag me 4" },
-  ]);
 
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: {
